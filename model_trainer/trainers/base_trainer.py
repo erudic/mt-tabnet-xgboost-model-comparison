@@ -53,8 +53,8 @@ class BaseTrainer(ABC):
         return np.mean(valid_scores)
     
     def _train_and_validate_hold_out(self,params):
-        trained_model = self._train_model(params,self.X_train,self.Y_train,self.X_valid,self.Y_valid)
-        valid_score = self._validate_model(trained_model,self.X_valid,self.Y_valid)
+        self.trained_model = self._train_model(params,self.X_train,self.Y_train,self.X_valid,self.Y_valid)
+        valid_score = self._validate_model(self.trained_model,self.X_valid,self.Y_valid)
         return valid_score
     
     @abstractmethod

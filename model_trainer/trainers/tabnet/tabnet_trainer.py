@@ -29,6 +29,16 @@ class TabNetTrainer():
             weight=self.class_weights), opt_func=self.optimizer, metrics=[MatthewsCorrCoef()])
 
         learn.fit_one_cycle(epochs)
+        return learn
+
+    def validate_model(self,model):
+        return float(model.validate()[1])
+
+    def train_and_validate(self, X_train, Y_train, X_val, Y_val, epochs=50):
+        learn = self.train(X_train, Y_train, X_val, Y_val, epochs)
+        loss = self.validate_model(learn)
+        return learn, loss
+
 
     def _fastaify_train_data(self, X_train, Y_train, X_val, Y_val):
         train_val, splits = self._merge_and_calc_splits(

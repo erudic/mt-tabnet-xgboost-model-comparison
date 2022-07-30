@@ -5,7 +5,7 @@ from model_trainer.preprocessing.feature_selection import FeatureSelector
 from model_trainer.preprocessing.encoder import Encoder
 
 class BaseTrainer(ABC):
-    def __init__(self,X_train_val,Y_train_val,cat_vars=[],reg_vars=[],vtype="k-fold", k=3,split=0.8):
+    def __init__(self,X_train_val,Y_train_val, cat_vars=[],reg_vars=[],vtype="k-fold", k=3,split=0.8):
         self.vtype=vtype
         self.cat_vars=cat_vars
         if(vtype=="k-fold"):
@@ -34,26 +34,26 @@ class BaseTrainer(ABC):
         Y_valid = self.Y_train_val.iloc[valid_index].copy()
         return X_train, X_valid, Y_train, Y_valid
 
-    def train_and_validate(self,params):
+    def train_and_validate(self,params,weights='balanced'):
         if(self.vtype=="k-fold"):
-            valid_score=self._train_and_validate_kfold(params)
+            valid_score=self._train_and_validate_kfold(params,weights)
         if(self.vtype=="hold-out"):
-            valid_score=self._train_and_validate_hold_out(params)
+            valid_score=self._train_and_validate_hold_out(params,weights)
         return valid_score
             
-    def _train_and_validate_kfold(self,params):
+    def _train_and_validate_kfold(self,params,weights):
         valid_scores = []
         for train_index, valid_index in self.kf.split(self.X_train_val,self.Y_train_val):
             X_train, X_valid, Y_train, Y_valid = self._split_using_index(train_index,valid_index)
             Y_train, Y_valid = self._encode_target(Y_train,Y_valid)
             X_train, X_valid = self._select_and_encode(X_train,X_valid)
-            trained_model = self._train_model(params,X_train,Y_train,X_valid,Y_valid)
+            trained_model = self._train_model(params,weights,X_train,Y_train,X_valid,Y_valid)
             valid_score = self._validate_model(trained_model,X_valid,Y_valid)
             valid_scores.append(valid_score)
         return np.mean(valid_scores)
     
-    def _train_and_validate_hold_out(self,params):
-        self.trained_model = self._train_model(params,self.X_train,self.Y_train,self.X_valid,self.Y_valid)
+    def _train_and_validate_hold_out(self,params,weights):
+        self.trained_model = self._train_model(params,weights,self.X_train,self.Y_train,self.X_valid,self.Y_valid)
         valid_score = self._validate_model(self.trained_model,self.X_valid,self.Y_valid)
         return valid_score
     

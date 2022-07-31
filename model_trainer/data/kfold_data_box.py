@@ -1,5 +1,5 @@
 from sklearn.model_selection import StratifiedKFold
-from model_trainer.data.BaseDataBox import BaseDataBox
+from model_trainer.data.base_data_box import BaseDataBox
 
 
 class KFoldDataBox(BaseDataBox):

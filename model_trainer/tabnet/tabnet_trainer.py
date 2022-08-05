@@ -22,14 +22,15 @@ class TabNetTrainer():
         self.batch_size = batch_size
         self.class_weights = class_weights
 
-    def train(self, X_train, Y_train, X_val, Y_val, epochs=50):
-        to = self._fastaify_data(X_train, Y_train, X_val, Y_val)
+    def train(self, X_train, Y_train, X_val, Y_val, cont_names=[], epochs=50):
+        to = self._fastaify_data(X_train, Y_train, X_val, Y_val,cont_names)
         dls = to.dataloaders(self.batch_size, drop_last=True)
 
         model = TabNetModel(get_emb_sz(to), len(
             to.cont_names), dls.c, **self.model_params)
 
-        if self.class_weights == None:
+        class_weights = self.class_weights
+        if class_weights == None:
             class_weights = compute_class_weight(
                 class_weight='balanced',
                 classes=Y_train.unique(),
@@ -50,15 +51,9 @@ class TabNetTrainer():
         loss = self.validate_model(learn)
         return learn, loss
 
-    def _fastaify_data(self, X_train, Y_train, X_val, Y_val):
+    def _fastaify_data(self, X_train, Y_train, X_val, Y_val,cont_names):
         train_val, splits = self._merge_and_calc_splits(
             X_train, Y_train, X_val, Y_val)
-
-        # TODO: move in shared
-        cont_names = ['Start_Lat', 'Start_Lng', 'End_Lat', 'End_Lng', 'Distance(mi)',
-                      'Temperature(F)', 'Wind_Chill(F)', 'Humidity(%)', 'Pressure(in)',
-                      'Visibility(mi)', 'Wind_Speed(mph)', 'Precipitation(in)', 'Wind_SN',
-                      'Wind_EW']
 
         cat_names = [col for col in train_val.columns]
         _ = [cat_names.remove(cont_name)

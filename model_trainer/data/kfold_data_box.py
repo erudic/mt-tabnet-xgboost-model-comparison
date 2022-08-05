@@ -9,6 +9,10 @@ class KFoldDataBox(BaseDataBox):
         self.kf = StratifiedKFold(n_splits=k)
         self.cat_vars
 
+    """
+    Processes(transforms and encodes data)
+    :return: X_train, Y_train, X_valid, Y_valid
+    """
     def get_processed_data(self):
         for train_index, valid_index in self.kf.split(self.X_train_val, self.Y_train_val):
             X_train, X_valid, Y_train, Y_valid = self._split_using_index(

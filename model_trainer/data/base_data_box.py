@@ -11,7 +11,7 @@ class BaseDataBox(ABC):
         X_valid = fs.transform(X_valid)
         encoder = Encoder(cat_vars)
         X_train = encoder.fit_transform(X_train)
-        X_valid = encoder.fit_transform(X_valid)
+        X_valid = encoder.transform(X_valid)
         Y_train = Y_train-1
         Y_valid = Y_valid-1
 

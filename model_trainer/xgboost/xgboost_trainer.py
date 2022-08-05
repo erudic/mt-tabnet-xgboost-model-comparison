@@ -15,10 +15,10 @@ class XGBoostTrainer:
     def train(self, X_train, Y_train, verbosity=1):
         model = xgboost.XGBClassifier(**self.model_params, verbosity=verbosity)
 
-        class_weight = self.class_weights if self.class_weights!=None else 'balanced'
+        class_weights = self.class_weights if self.class_weights!=None else 'balanced'
 
         sample_weights = class_weight.compute_sample_weight(
-            class_weight=class_weight,
+            class_weight=class_weights,
             y=Y_train
         )
 

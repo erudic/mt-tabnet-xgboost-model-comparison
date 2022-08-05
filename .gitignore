@@ -2,3 +2,7 @@ data/*
 .venv/*
 
 __pycache__/
+
+books/
+img/
+tex/

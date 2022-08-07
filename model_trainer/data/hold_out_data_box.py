@@ -9,4 +9,4 @@ class HoldOutDataBox(BaseDataBox):
         self.cat_vars = cat_vars
 
     def get_processed_data(self):
-        return self._proccess(self.X_train,self.Y_train,self.X_val,self.Y_val,self.cat_vars)
+        yield self._proccess(self.X_train,self.Y_train,self.X_val,self.Y_val,self.cat_vars)

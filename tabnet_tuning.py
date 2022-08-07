@@ -34,7 +34,7 @@ def process_params(params):
     return params, optimizer, batch_size, class_weights
 
 
-def tabnet_fn(databox, callbacks, params):
+def tabnet_fn(databox, callbacks, params,epochs):
     print("Starting fn evaluation with params")
     print(json.dumps(params,indent=4))
     model_params, optimizer, batch_size, class_weights = process_params(params)
@@ -42,11 +42,11 @@ def tabnet_fn(databox, callbacks, params):
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
         tt = TabNetTrainer(model_params, optimizer,
                            batch_size, callbacks, class_weights)
-        metrics.append(tt.train_and_validate(X_train, Y_train, X_val, Y_val))
+        metrics.append(tt.train_and_validate(X_train, Y_train, X_val, Y_val,epochs))
     return -np.average(metrics)
 
 
-def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, past_max_eval=0):
+def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, past_max_eval=0, epochs=200):
     X_train_val, Y_train_val = data_loader.load(
         data_size, base_data_path, 'train_val')
 
@@ -67,7 +67,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
     print(f"Creating data box for validation method: {validation_method}")
     if validation_method == 'hold-out':
         db = HoldOutDataBox(X_train_val, Y_train_val,
-                            cat_vars=data_config.categorical_variables, split=0.5)
+                            cat_vars=data_config.categorical_variables, split=0.25)
     elif validation_method == 'k-fold' and k != None:
         db = KFoldDataBox(X_train_val, Y_train_val, k,
                           cat_vars=data_config.categorical_variables)
@@ -84,7 +84,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         print("Creating new trials")
         trials = Trials()
 
-    fn = partial(tabnet_fn, databox=db, callbacks=callbacks)
+    fn = partial(tabnet_fn, databox=db, callbacks=callbacks, epochs=epochs)
     for evals in range(int(past_max_eval),int(max_eval)+1):
         best_hyperparams = fmin(fn=fn,
                                 space=spaces['tabnet'][data_size],
@@ -106,6 +106,7 @@ def get_parser():
     parser.add_argument('--max_eval', default=10)
     parser.add_argument('--past_max_eval', default=0)
     parser.add_argument('--base_data_path', required=True)
+    parser.add_argument('--epochs', default=200)
 
     return parser
 

@@ -7,20 +7,20 @@ tabnet_shared_space={
         {
             "opttype":"Adam",
             "wd":hp.loguniform('wdadam', np.log(0.0001), np.log(0.3)),
-            "lr":hp.loguniform("lr",np.log(0.005),np.log(0.025)), 
-            "lookahead": hp.choice("lookahead",[False,True])
+            "lr":hp.loguniform("lr_adam",np.log(0.005),np.log(0.025)), 
+            "lookahead": hp.choice("lookahead_adam",[False,True])
         },
         {
             "opttype":"SGD",
             "wd":hp.loguniform('wdsgd', np.log(0.0001), np.log(0.3)),
-            "lr":hp.loguniform("lr",np.log(0.005),np.log(0.025)),
-            "lookahead": hp.choice("lookahead",[False,True])
+            "lr":hp.loguniform("lr_sgd",np.log(0.005),np.log(0.025)),
+            "lookahead": hp.choice("lookahead_sgd",[False,True])
         },
         {
             "opttype":"RAdam",
             "wd":hp.loguniform('wdradam', np.log(0.0001), np.log(0.3)),
-            "lr":hp.loguniform("lr",np.log(0.005),np.log(0.025)), 
-            "lookahead": hp.choice("lookahead",[False,True])
+            "lr":hp.loguniform("lr_radam",np.log(0.005),np.log(0.025)), 
+            "lookahead": hp.choice("lookahead_radam",[False,True])
         }
     ]),
     "n":scope.int(hp.choice("n",[8,32,64])),

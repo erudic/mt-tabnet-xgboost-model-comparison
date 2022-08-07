@@ -3,22 +3,24 @@ from hyperopt.pyll import scope
 import numpy as np
 
 tabnet_shared_space={
-    "lookahead": hp.choice("lookahead",[False,True]),
     "optimizer": hp.choice('optimizer',[
         {
             "opttype":"Adam",
             "wd":hp.loguniform('wdadam', np.log(0.0001), np.log(0.3)),
             "lr":hp.loguniform("lr",np.log(0.005),np.log(0.025)), 
+            "lookahead": hp.choice("lookahead",[False,True])
         },
         {
             "opttype":"SGD",
             "wd":hp.loguniform('wdsgd', np.log(0.0001), np.log(0.3)),
-            "lr":hp.loguniform("lr",np.log(0.005),np.log(0.025))
+            "lr":hp.loguniform("lr",np.log(0.005),np.log(0.025)),
+            "lookahead": hp.choice("lookahead",[False,True])
         },
         {
             "opttype":"RAdam",
             "wd":hp.loguniform('wdradam', np.log(0.0001), np.log(0.3)),
             "lr":hp.loguniform("lr",np.log(0.005),np.log(0.025)), 
+            "lookahead": hp.choice("lookahead",[False,True])
         }
     ]),
     "n":scope.int(hp.choice("n",[8,32,64])),

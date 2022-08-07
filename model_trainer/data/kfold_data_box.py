@@ -17,7 +17,7 @@ class KFoldDataBox(BaseDataBox):
         for train_index, valid_index in self.kf.split(self.X_train_val, self.Y_train_val):
             X_train, X_valid, Y_train, Y_valid = self._split_using_index(
                 train_index, valid_index)
-            return self._proccess(
+            yield self._proccess(
                 self, X_train, Y_train, X_valid, Y_valid, self.cat_vars)
 
     def _split_using_index(self, train_index, valid_index):

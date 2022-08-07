@@ -44,8 +44,9 @@ def tabnet_fn(databox, callbacks, params):
     return -np.average(metrics)
 
 
-def optimize(data_size, validation_method, k=None, max_eval=10, past_max_eval=0):
-    X_train_val, Y_train_val = data_loader.load(data_size)
+def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, past_max_eval=0):
+    X_train_val, Y_train_val = data_loader.load(
+        data_size, base_data_path, 'train_val')
 
     callbacks = [
         EarlyStoppingCallback(
@@ -99,8 +100,9 @@ def get_parser():
     parser.add_argument('--k', default=None)
     parser.add_argument('--max_eval', default=10)
     parser.add_argument('--past_max_eval', default=0)
+    parser.add_argument('--base_data_path', required=True)
 
-    args = vars(parser.parse_args())
+    return parser
 
 
 def main():

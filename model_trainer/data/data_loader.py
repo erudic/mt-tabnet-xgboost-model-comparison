@@ -2,9 +2,8 @@ from ast import literal_eval
 import pandas as pd
 
 
-
-def load(size,type='train_val'):
-    df = pd.read_csv(f'../../data/{size}/{type}.csv')
+def load(size, base_path='data/', type='train_val'):
+    df = pd.read_csv(f'{base_path}/us-accidents-{size}/{type}.csv')
     df = _parse_to_array(df,'Weather_Condition_Arr')
     df_X,df_Y = _split_features(df,'Severity')
     return df_X, df_Y

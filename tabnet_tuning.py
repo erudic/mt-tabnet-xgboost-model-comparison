@@ -35,6 +35,8 @@ def process_params(params):
 
 
 def tabnet_fn(databox, callbacks, params):
+    print("Starting fn evaluation with params")
+    print(json.dumps(params,indent=4))
     model_params, optimizer, batch_size, class_weights = process_params(params)
     metrics = []
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
@@ -62,6 +64,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
             reset_on_fit=True
         )
     ]
+    print(f"Creating data box for validation method: {validation_method}")
     if validation_method == 'hold-out':
         db = HoldOutDataBox(X_train_val, Y_train_val,
                             cat_vars=data_config.categorical_variables, split=0.5)
@@ -75,12 +78,14 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
     trials_in_path = f"/input/trials/tabnet-{data_size}.p"
     trials_out_path = f"/output/trials/tabnet-{data_size}.p"
     if path.exists(trials_in_path):
+        print("Loading trial from path: {trials_in_path}")
         trials = pickle.load(open(trials_in_path))
     else:
+        print("Creating new trials")
         trials = Trials()
 
     fn = partial(tabnet_fn, databox=db, callbacks=callbacks)
-    for evals in range(int(past_max_eval)+1,int(max_eval)+1):
+    for evals in range(int(past_max_eval),int(max_eval)+1):
         best_hyperparams = fmin(fn=fn,
                                 space=spaces['tabnet'][data_size],
                                 algo=tpe.suggest,
@@ -108,6 +113,8 @@ def get_parser():
 def main():
     parser = get_parser()
     args = vars(parser.parse_args())
+    print("Starting optimization with args")
+    print(json.dumps(args,indent=4))
     optimize(**args)
 
 

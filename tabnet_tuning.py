@@ -1,3 +1,4 @@
+import argparse
 from functools import partial
 import json
 from os import path
@@ -78,7 +79,7 @@ def optimize(data_size, validation_method, k=None, max_eval=10, past_max_eval=0)
         trials = Trials()
 
     fn = partial(tabnet_fn, databox=db, callbacks=callbacks)
-    for evals in range(past_max_eval+1,max_eval+1):
+    for evals in range(past_max_eval+1, max_eval+1):
         best_hyperparams = fmin(fn=fn,
                                 space=spaces['tabnet'][data_size],
                                 algo=tpe.suggest,
@@ -86,10 +87,27 @@ def optimize(data_size, validation_method, k=None, max_eval=10, past_max_eval=0)
                                 trials=trials)
 
         pickle.dump(trials, open(trials_out_path, "wb"))
-    
+
     print("Best hyperparams found: ")
     print(json.dumps(best_hyperparams, indent=4))
 
 
 def get_parser():
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_size', required=True)
+    parser.add_argument('--validation_method', required=True)
+    parser.add_argument('--k', default=None)
+    parser.add_argument('--max_eval', default=10)
+    parser.add_argument('--past_max_eval', default=0)
+
+    args = vars(parser.parse_args())
+
+
+def main():
+    parser = get_parser()
+    args = vars(parser.parse_args())
+    optimize(**args)
+
+
+if __name__ == "__main__":
+    main()

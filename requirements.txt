@@ -2,8 +2,8 @@ dtale==2.6.0
 graphviz==0.20
 ipympl==0.9.1
 ipywidgets==7.7.0
-sklearn==0.0
-#xgboost==1.6.1
+scikit-learn==1.1.2
+xgboost==1.6.1
 fastai==2.6.3
 fast-tabnet==0.2.0
 hyperopt==0.2.7

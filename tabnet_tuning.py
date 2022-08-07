@@ -80,7 +80,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         trials = Trials()
 
     fn = partial(tabnet_fn, databox=db, callbacks=callbacks)
-    for evals in range(past_max_eval+1, max_eval+1):
+    for evals in range(int(past_max_eval)+1,int(max_eval)+1):
         best_hyperparams = fmin(fn=fn,
                                 space=spaces['tabnet'][data_size],
                                 algo=tpe.suggest,

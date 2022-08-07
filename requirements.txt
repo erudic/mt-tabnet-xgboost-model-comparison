@@ -7,3 +7,4 @@ xgboost==1.6.1
 fastai==2.6.3
 fast-tabnet==0.2.0
 hyperopt==0.2.7
+numpy==1.23.1

@@ -34,7 +34,7 @@ def process_params(params):
     return params, optimizer, batch_size, class_weights
 
 
-def tabnet_fn(databox, callbacks, params,epochs):
+def tabnet_fn(params,databox, callbacks,epochs):
     print("Starting fn evaluation with params")
     print(json.dumps(params,indent=4))
     model_params, optimizer, batch_size, class_weights = process_params(params)
@@ -47,6 +47,7 @@ def tabnet_fn(databox, callbacks, params,epochs):
 
 
 def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, past_max_eval=0, epochs=200):
+    print("Loading data")
     X_train_val, Y_train_val = data_loader.load(
         data_size, base_data_path, 'train_val')
 
@@ -85,7 +86,8 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         trials = Trials()
 
     fn = partial(tabnet_fn, databox=db, callbacks=callbacks, epochs=epochs)
-    for evals in range(int(past_max_eval),int(max_eval)+1):
+    print("Starting trials")
+    for evals in range(int(past_max_eval)+1,int(max_eval)+1):
         best_hyperparams = fmin(fn=fn,
                                 space=spaces['tabnet'][data_size],
                                 algo=tpe.suggest,
@@ -114,7 +116,6 @@ def get_parser():
 def main():
     parser = get_parser()
     args = vars(parser.parse_args())
-    print("Starting optimization with args")
     print(json.dumps(args,indent=4))
     optimize(**args)
 

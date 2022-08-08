@@ -46,8 +46,8 @@ class TabNetTrainer():
     def validate_model(self, model):
         return float(model.validate()[1])
 
-    def train_and_validate(self, X_train, Y_train, X_val, Y_val, epochs=50):
-        learn = self.train(X_train, Y_train, X_val, Y_val, epochs)
+    def train_and_validate(self, X_train, Y_train, X_val, Y_val,cont_vars=[], epochs=50):
+        learn = self.train(X_train, Y_train, X_val, Y_val,cont_vars, epochs)
         loss = self.validate_model(learn)
         return learn, loss
 

@@ -6,7 +6,7 @@ categorical_variables = ['Side', 'State', 'Amenity', 'Bump', 'Crossing',
                          'Astronomical_Twilight']
 
 
-continouts_variables = ['Start_Lat', 'Start_Lng', 'End_Lat', 'End_Lng', 'Distance(mi)',
+continous_variables = ['Start_Lat', 'Start_Lng', 'End_Lat', 'End_Lng', 'Distance(mi)',
                         'Temperature(F)', 'Wind_Chill(F)', 'Humidity(%)', 'Pressure(in)',
                         'Visibility(mi)', 'Wind_Speed(mph)', 'Precipitation(in)', 'Wind_SN',
                         'Wind_EW']

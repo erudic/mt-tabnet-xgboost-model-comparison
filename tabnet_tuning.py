@@ -42,7 +42,7 @@ def tabnet_fn(params,databox, callbacks,epochs):
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
         tt = TabNetTrainer(model_params, optimizer,
                            batch_size, callbacks, class_weights)
-        metrics.append(tt.train_and_validate(X_train, Y_train, X_val, Y_val,epochs))
+        metrics.append(tt.train_and_validate(X_train, Y_train, X_val, Y_val, data_config.continous_variables,epochs))
     return -np.average(metrics)
 
 

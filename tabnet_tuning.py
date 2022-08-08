@@ -18,7 +18,7 @@ import numpy as np
 def process_params(params):
     # TODO: extract class weights
     class_weights = None
-    batch_size = int(np.power(2, params['batch_size']))
+    batch_size = int(np.power(2, params.pop('batch_size')))
     params['virtual_batch_size'] = int(
         np.power(2, params['virtual_batch_size']))
 

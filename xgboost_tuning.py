@@ -3,7 +3,6 @@ from functools import partial
 import json
 import os
 import pickle
-from fastai.tabular.all import EarlyStoppingCallback, SaveModelCallback
 from model_trainer.xgboost.xgboost_trainer import XGBoostTrainer
 from model_trainer.data.hold_out_data_box import HoldOutDataBox
 from model_trainer.data.kfold_data_box import KFoldDataBox
@@ -12,7 +11,6 @@ from tuning_config import spaces, base_class_weights_large
 import data_config
 from hyperopt import Trials, fmin, tpe
 import numpy as np
-from torch import tensor
 
 def process_params(params):
     cw_modifier = params.pop('cw_modifier')

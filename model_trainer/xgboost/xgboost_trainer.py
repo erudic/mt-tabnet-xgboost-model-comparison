@@ -34,8 +34,7 @@ class XGBoostTrainer:
         return model, metric
 
     def validate(self, model, X_val, Y_val):
-        sample_weights = self.compute_sample_weights(Y_val)
-        return matthews_corrcoef(Y_val, model.predict(X_val), sample_weight=sample_weights)
+        return matthews_corrcoef(Y_val, model.predict(X_val))
 
     def compute_sample_weights(self, Y):
         return class_weight.compute_sample_weight(

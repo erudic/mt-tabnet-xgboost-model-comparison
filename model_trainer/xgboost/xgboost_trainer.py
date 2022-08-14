@@ -30,7 +30,7 @@ class XGBoostTrainer:
         return model
     
     def train_and_validate(self,X_train, Y_train, X_val, Y_val, verbosity=1):
-        model = self.train(X_train,Y_train,verbosity)
+        model = self.train(X_train, Y_train, X_val, Y_val,verbosity)
         metric = self.validate(model,X_val,Y_val)
         return model, metric
 

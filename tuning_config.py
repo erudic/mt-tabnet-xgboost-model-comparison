@@ -26,7 +26,8 @@ tabnet_shared_space={
     "n":scope.int(hp.choice("n",[8,32,64])),
     "n_steps":scope.int(hp.quniform("n_steps",3,10,1)),
     "gamma":hp.uniform("gamma",1,2),
-    "momentum":hp.uniform("momentum",0,1)
+    "momentum":hp.uniform("momentum",0,1),
+    "cw_modifier": hp.uniform("cw_modifier",0.5,1.5)
     }
 
 spaces = {
@@ -38,3 +39,5 @@ spaces = {
         }
     }
 }
+
+base_class_weights_large = [0.3, 4.6, 27, 5]

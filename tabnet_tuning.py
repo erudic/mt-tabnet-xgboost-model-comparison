@@ -9,15 +9,15 @@ from model_trainer.tabnet.tabnet_trainer import TabNetTrainer
 from model_trainer.data.hold_out_data_box import HoldOutDataBox
 from model_trainer.data.kfold_data_box import KFoldDataBox
 from model_trainer.data import data_loader
-from tuning_config import spaces
+from tuning_config import spaces, base_class_weights_large
 import data_config
 from hyperopt import Trials, fmin, tpe
 import numpy as np
-
+from torch import tensor
 
 def process_params(params):
-    # TODO: extract class weights
-    class_weights = None
+    cw_modifier = params.pop('cw_modifier')
+    class_weights = tensor(np.multiply(base_class_weights_large,cw_modifier))
     batch_size = int(np.power(2, params.pop('batch_size')))
     params['virtual_batch_size'] = int(
         np.power(2, params['virtual_batch_size']))

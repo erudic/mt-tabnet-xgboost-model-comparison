@@ -1,7 +1,7 @@
 import argparse
 from functools import partial
 import json
-from os import path
+import os
 import pickle
 from fastai.tabular.all import EarlyStoppingCallback, SaveModelCallback
 from model_trainer.tabnet.utils import get_optimizer_from_params
@@ -25,24 +25,25 @@ def process_params(params):
     opt_params = params.pop('optimizer')
     opttype = opt_params.pop('opttype')
     lookahead = opt_params.pop('lookahead')
-    params['lr'] = opt_params.pop('lr')
+    lr = opt_params.pop('lr')
     optimizer = get_optimizer_from_params(opttype, opt_params, lookahead)
 
     n = params.pop('n')
     params['n_d'] = n
     params['n_a'] = n
-    return params, optimizer, batch_size, class_weights
+    return params, optimizer, batch_size, class_weights, lr
 
 
 def tabnet_fn(params,databox, callbacks,epochs):
     print("Starting fn evaluation with params")
     print(json.dumps(params,indent=4))
-    model_params, optimizer, batch_size, class_weights = process_params(params)
+    model_params, optimizer, batch_size, class_weights,lr = process_params(params)
     metrics = []
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
-        tt = TabNetTrainer(model_params, optimizer,
+        tt = TabNetTrainer(lr,model_params, optimizer,
                            batch_size, callbacks, class_weights)
-        metrics.append(tt.train_and_validate(X_train, Y_train, X_val, Y_val, data_config.continous_variables,epochs))
+        model, metric = tt.train_and_validate(X_train, Y_train, X_val, Y_val, data_config.continous_variables,int(epochs))
+        metrics.append(metric)
     return -np.average(metrics)
 
 
@@ -78,9 +79,10 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
 
     trials_in_path = f"/input/trials/tabnet-{data_size}.p"
     trials_out_path = f"/output/trials/tabnet-{data_size}.p"
-    if path.exists(trials_in_path):
+    if os.path.exists(trials_in_path):
         print("Loading trial from path: {trials_in_path}")
-        trials = pickle.load(open(trials_in_path))
+        with open(trials_in_path) as in_file:
+            trials = pickle.load(in_file)
     else:
         print("Creating new trials")
         trials = Trials()
@@ -94,7 +96,9 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
                                 max_evals=evals,
                                 trials=trials)
 
-        pickle.dump(trials, open(trials_out_path, "wb"))
+        os.makedirs(os.path.dirname(trials_out_path), exist_ok=True)
+        with open(trials_out_path, "wb") as out_file:
+            pickle.dump(trials, open(out_file, "wb"))
 
     print("Best hyperparams found: ")
     print(json.dumps(best_hyperparams, indent=4))

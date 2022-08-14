@@ -15,8 +15,7 @@ class XGBoostTrainer:
     def train(self, X_train, Y_train, X_val,Y_val, verbosity=1):
         model = xgboost.XGBClassifier(
             **self.model_params, 
-            verbosity=verbosity,
-            eval_metric=matthews_corrcoef
+            verbosity=verbosity
         )
 
         class_weights = self.class_weights if self.class_weights!=None else 'balanced'

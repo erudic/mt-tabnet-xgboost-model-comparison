@@ -15,7 +15,8 @@ from fastai.tabular.all import (
 
 
 class TabNetTrainer():
-    def __init__(self, model_params: Dict[str, str], optimizer: Optimizer, batch_size: int, cbs: List[Callback]= [],class_weights: Union[Tensor, None] = None):
+    def __init__(self, lr:float, model_params: Dict[str, str], optimizer: Optimizer, batch_size: int, cbs: List[Callback]= [],class_weights: Union[Tensor, None] = None):
+        self.lr=lr
         self.cbs = cbs
         self.model_params = model_params
         self.optimizer = optimizer
@@ -24,7 +25,7 @@ class TabNetTrainer():
 
     def train(self, X_train, Y_train, X_val, Y_val, cont_names=[], epochs=50):
         to = self._fastaify_data(X_train, Y_train, X_val, Y_val,cont_names)
-        dls = to.dataloaders(self.batch_size, drop_last=True)
+        dls = to.dataloaders(bs=self.batch_size, drop_last=True)
 
         model = TabNetModel(get_emb_sz(to), len(
             to.cont_names), dls.c, **self.model_params)
@@ -37,19 +38,26 @@ class TabNetTrainer():
                 y=Y_train
             )
 
-        learn = Learner(dls, model, CrossEntropyLossFlat(weight=self.class_weights),
-                         opt_func=self.optimizer, metrics=[MatthewsCorrCoef()])
-
-        learn.fit_one_cycle(epochs,cbs=self.cbs)
+        learn = Learner(
+            dls=dls, 
+            model=model,
+            loss_func=CrossEntropyLossFlat(weight=self.class_weights),
+            opt_func=self.optimizer, metrics=[MatthewsCorrCoef()],
+            lr = self.lr
+        )
+        with learn.no_bar():
+            learn.fit_one_cycle(epochs,cbs=self.cbs)
         return learn
 
     def validate_model(self, model):
-        return float(model.validate()[1])
+        with model.no_bar():
+            metric = float(model.validate()[1])
+        return metric
 
     def train_and_validate(self, X_train, Y_train, X_val, Y_val,cont_vars=[], epochs=50):
         learn = self.train(X_train, Y_train, X_val, Y_val,cont_vars, epochs)
-        loss = self.validate_model(learn)
-        return learn, loss
+        metric = self.validate_model(learn)
+        return learn, metric
 
     def _fastaify_data(self, X_train, Y_train, X_val, Y_val,cont_names):
         train_val, splits = self._merge_and_calc_splits(

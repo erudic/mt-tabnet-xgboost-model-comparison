@@ -17,6 +17,7 @@ from torch import tensor
 
 def process_params(params):
     cw_modifier = params.pop('cw_modifier')
+    class_weights = base_class_weights_large.copy()
     class_weights[1]=class_weights[1]*cw_modifier
     class_weights = tensor(np.array(class_weights,dtype='f'))
     batch_size = int(np.power(2, params.pop('batch_size')))

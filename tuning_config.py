@@ -47,7 +47,7 @@ spaces = {
         "subsample":hp.uniform("subsample",0.3,1),
         "lambda":hp.uniform("lambda",0,5),
         "alpha":hp.uniform("alpha",0,5),
-        "num_estimators":scope.int(hp.quniform("num_estimators",60,220,20)),
+        "n_estimators":scope.int(hp.quniform("n_estimators",60,220,20)),
         "cw_modifier": hp.uniform("cw_modifier",0.5,1.5)
     }
 }

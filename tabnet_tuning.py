@@ -83,7 +83,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
     trials_in_path = f"/inputs/trials/tabnet-{data_size}.p"
     trials_out_path = f"/outputs/trials/tabnet-{data_size}.p"
     if os.path.exists(trials_in_path):
-        print("Loading trial from path: {trials_in_path}")
+        print(f"Loading trial from path: {trials_in_path}")
         with open(trials_in_path, 'rb') as in_file:
             trials = pickle.load(in_file)
     else:

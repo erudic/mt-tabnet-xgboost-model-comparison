@@ -17,7 +17,7 @@ from torch import tensor
 
 def process_params(params):
     cw_modifier = params.pop('cw_modifier')
-    class_weights = tensor(np.multiply(base_class_weights_large,cw_modifier))
+    class_weights = tensor(np.multiply(np.array(base_class_weights_large,type='f'),cw_modifier))
     batch_size = int(np.power(2, params.pop('batch_size')))
     params['virtual_batch_size'] = int(
         np.power(2, params['virtual_batch_size']))

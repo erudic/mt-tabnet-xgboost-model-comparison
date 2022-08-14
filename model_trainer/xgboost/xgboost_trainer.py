@@ -26,7 +26,7 @@ class XGBoostTrainer:
             y=Y_train
         )
 
-        model.fit(X_train, Y_train, eval_set=[(X_val,Y_val)], sample_weight=sample_weights)
+        model.fit(X_train, Y_train, eval_set=[(X_val,Y_val)], verbose_eval=10, sample_weight=sample_weights)
         return model
     
     def train_and_validate(self,X_train, Y_train, X_val, Y_val, verbosity=1):

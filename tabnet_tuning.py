@@ -17,7 +17,8 @@ from torch import tensor
 
 def process_params(params):
     cw_modifier = params.pop('cw_modifier')
-    class_weights = tensor(np.multiply(np.array(base_class_weights_large,dtype='f'),cw_modifier))
+    class_weights[1]=class_weights[1]*cw_modifier
+    class_weights = tensor(np.array(class_weights,dtype='f'))
     batch_size = int(np.power(2, params.pop('batch_size')))
     params['virtual_batch_size'] = int(
         np.power(2, params['virtual_batch_size']))
@@ -44,6 +45,7 @@ def tabnet_fn(params,databox, callbacks,epochs):
                            batch_size, callbacks, class_weights)
         model, metric = tt.train_and_validate(X_train, Y_train, X_val, Y_val, data_config.continous_variables,int(epochs))
         metrics.append(metric)
+    print(f"Training finished got metrics: {metrics}")
     return -np.average(metrics)
 
 

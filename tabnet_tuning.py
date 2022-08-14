@@ -97,8 +97,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
                                 trials=trials)
 
         os.makedirs(os.path.dirname(trials_out_path), exist_ok=True)
-        with open(trials_out_path, "wb") as out_file:
-            pickle.dump(trials, open(out_file, "wb"))
+        pickle.dump(trials, trials_out_path)
 
     print("Best hyperparams found: ")
     print(json.dumps(best_hyperparams, indent=4))

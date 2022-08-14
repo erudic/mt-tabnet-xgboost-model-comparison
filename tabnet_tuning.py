@@ -77,8 +77,8 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         raise ValueError(f"Either unsupported validation method given (given: {validation_method}, supported: hold-out, k-fold OR \
         k not given for k-fold")
 
-    trials_in_path = f"/input/trials/tabnet-{data_size}.p"
-    trials_out_path = f"/output/trials/tabnet-{data_size}.p"
+    trials_in_path = f"/inputs/trials/tabnet-{data_size}.p"
+    trials_out_path = f"/outputs/trials/tabnet-{data_size}.p"
     if os.path.exists(trials_in_path):
         print("Loading trial from path: {trials_in_path}")
         with open(trials_in_path) as in_file:

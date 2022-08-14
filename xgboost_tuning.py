@@ -26,7 +26,7 @@ def xgboost_fn(params,databox):
     model_params, class_weights = process_params(params)
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
         xt = XGBoostTrainer(model_params,class_weights)
-        model, metric = xt.train_and_validate(X_train, Y_train, X_val, Y_val)
+        model, metric = xt.train_and_validate(X_train, Y_train, X_val, Y_val,verbosity=2)
         metrics.append(metric)
     return -np.average(metrics)
 

@@ -96,7 +96,8 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
                                 max_evals=evals,
                                 trials=trials)
 
-        os.makedirs(os.path.dirname(trials_out_path), exist_ok=True)
+        trials_dir = "/".join(trials_out_path.split("/")[:-1])
+        os.makedirs(os.path.dirname(trials_dir), exist_ok=True)
         print(f"Dumping trials to {trials_out_path}")
         with open(trials_out_path, "wb") as out_file:
             pickle.dump(trials, out_file)

@@ -23,7 +23,7 @@ class XGBoostTrainer:
 
         model.fit(X_train, Y_train, eval_set=[(X_val, Y_val)],
                   sample_weight=sample_weights_train,
-                  sample_weight_eval_set=sample_weights_val
+                  sample_weight_eval_set=[sample_weights_val]
                   )
 
         return model

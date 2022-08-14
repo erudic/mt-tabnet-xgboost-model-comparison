@@ -37,7 +37,19 @@ spaces = {
             "batch_size":hp.quniform("batch_size",12,15,1),
             "virtual_batch_size":hp.quniform("virtual_batch_size",8,11,1)
         }
+    },
+    "xgboost":{
+        "eta":hp.uniform("eta",0.01,0.3),
+        "gamma":hp.uniform("gamma",0,10),
+        "max_depth":scope.int(hp.quniform("max_depth",3,10,1)),
+        "min_child_weight":hp.uniform("min_child_weight",0,10),
+        "max_delta_step":hp.uniform("max_delta_step",1,10),
+        "subsample":hp.uniform("subsample",0.3,1),
+        "lambda":hp.uniform("lambda",0,5),
+        "alpha":hp.uniform("alpha",0,5),
+        "num_estimators":scope.int(hp.quniform("num_estimators",60,220,20)),
+        "cw_modifier": hp.uniform("cw_modifier",0.5,1.5)
     }
 }
 
-base_class_weights_large = [0.3, 4.6, 27, 5]
+base_class_weights_large = [27.3, 0.3, 4.6, 5.4]

@@ -48,7 +48,7 @@ spaces = {
         "lambda":hp.uniform("lambda",0,5),
         "alpha":hp.uniform("alpha",0,5),
         "cw_modifier": hp.uniform("cw_modifier",0.5,1.5),
-        "n_estimators":200,
+        "n_estimators":500,
         "early_stopping_rounds":10,
         "tree_method":"exact"
     }

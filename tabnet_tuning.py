@@ -44,13 +44,13 @@ def tabnet_fn(params,databox, callbacks,epochs):
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
         tt = TabNetTrainer(lr,model_params, optimizer,
                            batch_size, callbacks, class_weights)
-        model, metric = tt.train_and_validate(X_train, Y_train, X_val, Y_val, data_config.continous_variables,int(epochs))
+        model, metric = tt.train_and_validate(X_train, Y_train, X_val, Y_val, data_config.continous_variables,epochs)
         metrics.append(metric)
     print(f"Training finished got metrics: {metrics}")
     return -np.average(metrics)
 
 
-def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, past_max_eval=0, epochs=200):
+def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, past_max_eval=0, epochs=200, patience=20):
     print("Loading data")
     X_train_val, Y_train_val = data_loader.load(
         data_size, base_data_path, 'train_val')
@@ -58,7 +58,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
     callbacks = [
         EarlyStoppingCallback(
             monitor='valid_loss',
-            patience=10,
+            patience=patience,
             reset_on_fit=True
         ),
         SaveModelCallback(
@@ -117,7 +117,8 @@ def get_parser():
     parser.add_argument('--max_eval', default=10)
     parser.add_argument('--past_max_eval', default=0)
     parser.add_argument('--base_data_path', required=True)
-    parser.add_argument('--epochs', default=200)
+    parser.add_argument('--epochs', default=200, type=int)
+    parser.add_argument('--patience', default=20, type=int)
 
     return parser
 

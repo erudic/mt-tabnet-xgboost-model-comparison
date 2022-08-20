@@ -22,9 +22,15 @@ def process_params(params):
     return params, class_weights
 
 
-def xgboost_fn(params, databox, callbacks):
+def xgboost_fn(params, databox, early_stop_rounds, min_delta):
     print("Starting fn evaluation with params")
     print(json.dumps(params, indent=4))
+
+    callbacks = [
+        EarlyStopping(rounds=early_stop_rounds,
+                      save_best=True, min_delta=min_delta)
+    ]
+
     metrics = []
     model_params, class_weights = process_params(params)
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
@@ -51,10 +57,6 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         raise ValueError(f"Either unsupported validation method given (given: {validation_method}, supported: hold-out, k-fold OR \
         k not given for k-fold")
 
-    callbacks = [
-        EarlyStopping(rounds=early_stop_rounds, min_delta=min_delta)
-    ]
-
     trials_in_path = f"/inputs/trials/xgboost-{data_size}.p"
     trials_out_path = f"/outputs/trials/xgboost-{data_size}.p"
     if os.path.exists(trials_in_path):
@@ -65,7 +67,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         print("Creating new trials")
         trials = Trials()
 
-    fn = partial(xgboost_fn, databox=db, callbacks=callbacks)
+    fn = partial(xgboost_fn, databox=db, early_stop_rounds=early_stop_rounds, min_delta=min_delta)
     print("Starting trials")
     for evals in range(int(past_max_eval)+1, int(max_eval)+1):
         best_hyperparams = fmin(fn=fn,

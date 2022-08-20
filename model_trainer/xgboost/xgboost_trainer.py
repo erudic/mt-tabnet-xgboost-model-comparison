@@ -1,21 +1,24 @@
 
+from gc import callbacks
 from re import M
 from typing import Dict, List, Union
 from sklearn.metrics import matthews_corrcoef
-
 from sklearn.utils import class_weight
 import xgboost
+from xgboost.callback import TrainingCallback
 
 
 class XGBoostTrainer:
-    def __init__(self, model_params: Dict, class_weights: Union[List[float], None] = None):
+    def __init__(self, model_params: Dict, class_weights: Union[List[float], None] = None, callbacks: List[TrainingCallback] = None):
         self.model_params = model_params
         self.class_weights = class_weights if class_weights != None else 'balanced'
+        self.callbacks = [] if callbacks == None else callbacks
 
     def train(self, X_train, Y_train, X_val, Y_val, verbosity=1):
         model = xgboost.XGBClassifier(
             **self.model_params,
-            verbosity=verbosity
+            verbosity=verbosity,
+            callbacks=self.callbacks
         )
 
         sample_weights_val = self.compute_sample_weights(Y_val)

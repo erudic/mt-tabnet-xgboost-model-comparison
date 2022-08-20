@@ -11,27 +11,31 @@ from tuning_config import spaces, base_class_weights_large
 import data_config
 from hyperopt import Trials, fmin, tpe
 import numpy as np
+from xgboost.callback import EarlyStopping
+
 
 def process_params(params):
     cw_modifier = params.pop('cw_modifier')
     class_weights = base_class_weights_large.copy()
-    class_weights[1]=class_weights[1]*cw_modifier
-    class_weights={index:value for index,value in enumerate(class_weights)}
-    return params,class_weights
+    class_weights[1] = class_weights[1]*cw_modifier
+    class_weights = {index: value for index, value in enumerate(class_weights)}
+    return params, class_weights
 
-def xgboost_fn(params,databox):
+
+def xgboost_fn(params, databox, callbacks):
     print("Starting fn evaluation with params")
-    print(json.dumps(params,indent=4))
+    print(json.dumps(params, indent=4))
     metrics = []
     model_params, class_weights = process_params(params)
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
-        xt = XGBoostTrainer(model_params,class_weights)
-        model, metric = xt.train_and_validate(X_train, Y_train, X_val, Y_val,verbosity=1)
+        xt = XGBoostTrainer(model_params, class_weights, callbacks)
+        model, metric = xt.train_and_validate(
+            X_train, Y_train, X_val, Y_val, verbosity=1)
         metrics.append(metric)
     return -np.average(metrics)
 
 
-def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, past_max_eval=0, epochs=200):
+def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, past_max_eval=0, early_stop_rounds=50, min_delta=1e-3):
     print("Loading data")
     X_train_val, Y_train_val = data_loader.load(
         data_size, base_data_path, 'train_val')
@@ -47,6 +51,10 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         raise ValueError(f"Either unsupported validation method given (given: {validation_method}, supported: hold-out, k-fold OR \
         k not given for k-fold")
 
+    callbacks = [
+        EarlyStopping(rounds=early_stop_rounds, min_delta=min_delta)
+    ]
+
     trials_in_path = f"/inputs/trials/xgboost-{data_size}.p"
     trials_out_path = f"/outputs/trials/xgboost-{data_size}.p"
     if os.path.exists(trials_in_path):
@@ -57,9 +65,9 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         print("Creating new trials")
         trials = Trials()
 
-    fn = partial(xgboost_fn, databox=db)
+    fn = partial(xgboost_fn, databox=db, callbacks=callbacks)
     print("Starting trials")
-    for evals in range(int(past_max_eval)+1,int(max_eval)+1):
+    for evals in range(int(past_max_eval)+1, int(max_eval)+1):
         best_hyperparams = fmin(fn=fn,
                                 space=spaces['xgboost'],
                                 algo=tpe.suggest,
@@ -84,6 +92,8 @@ def get_parser():
     parser.add_argument('--max_eval', default=10)
     parser.add_argument('--past_max_eval', default=0)
     parser.add_argument('--base_data_path', required=True)
+    parser.add_argument('--early_stop_rounds', default=50, type=int)
+    parser.add_argument('--min_delta', default=1e-3, type=float)
 
     return parser
 
@@ -91,7 +101,7 @@ def get_parser():
 def main():
     parser = get_parser()
     args = vars(parser.parse_args())
-    print(json.dumps(args,indent=4))
+    print(json.dumps(args, indent=4))
     optimize(**args)
 
 

@@ -26,14 +26,14 @@ def xgboost_fn(params, databox, early_stop_rounds, min_delta):
     print("Starting fn evaluation with params")
     print(json.dumps(params, indent=4))
 
-    callbacks = [
-        EarlyStopping(rounds=early_stop_rounds,
-                      save_best=True, min_delta=min_delta)
-    ]
-
     metrics = []
     model_params, class_weights = process_params(params)
     for X_train, Y_train, X_val, Y_val in databox.get_processed_data():
+        # reinitialize callbacks
+        callbacks = [
+            EarlyStopping(rounds=early_stop_rounds,
+                          save_best=True, min_delta=min_delta)
+        ]
         xt = XGBoostTrainer(model_params, class_weights, callbacks)
         model, metric = xt.train_and_validate(
             X_train, Y_train, X_val, Y_val, verbosity=1)
@@ -67,7 +67,8 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         print("Creating new trials")
         trials = Trials()
 
-    fn = partial(xgboost_fn, databox=db, early_stop_rounds=early_stop_rounds, min_delta=min_delta)
+    fn = partial(xgboost_fn, databox=db,
+                 early_stop_rounds=early_stop_rounds, min_delta=min_delta)
     print("Starting trials")
     for evals in range(int(past_max_eval)+1, int(max_eval)+1):
         best_hyperparams = fmin(fn=fn,

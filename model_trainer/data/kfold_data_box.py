@@ -7,7 +7,7 @@ class KFoldDataBox(BaseDataBox):
         self.X_train_val = X_train_val
         self.Y_train_val = Y_train_val
         self.kf = StratifiedKFold(n_splits=k)
-        self.cat_vars
+        self.cat_vars=cat_vars
 
     """
     Processes(transforms and encodes data)

@@ -91,7 +91,7 @@ def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_size', required=True)
     parser.add_argument('--validation_method', required=True)
-    parser.add_argument('--k', default=None)
+    parser.add_argument('--k', default=None, type=int)
     parser.add_argument('--max_eval', default=10)
     parser.add_argument('--past_max_eval', default=0)
     parser.add_argument('--base_data_path', required=True)

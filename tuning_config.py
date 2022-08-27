@@ -39,7 +39,7 @@ spaces = {
         },
         "medium":{
             **tabnet_shared_space,
-            "batch_size":hp.quniform("batch_size",11,14,1),
+            "batch_size":hp.quniform("batch_size",11,13,1),
             "virtual_batch_size":hp.quniform("virtual_batch_size",7,10,1)
         }
     },

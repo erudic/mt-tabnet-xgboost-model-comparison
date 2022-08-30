@@ -41,6 +41,11 @@ spaces = {
             **tabnet_shared_space,
             "batch_size":hp.quniform("batch_size",11,13,1),
             "virtual_batch_size":hp.quniform("virtual_batch_size",7,10,1)
+        },
+        "small":{
+            **tabnet_shared_space,
+            "batch_size":hp.quniform("batch_size",8,11,1),
+            "virtual_batch_size":hp.quniform("virtual_batch_size",5,7,1)
         }
     },
     "xgboost":{

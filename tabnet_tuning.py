@@ -48,12 +48,9 @@ def tabnet_fn(params,databox, callbacks,epochs):
             model, metric = tt.train_and_validate(X_train, Y_train, X_val, Y_val, data_config.continous_variables,epochs)
             metrics.append(metric)
         except RuntimeError as e:
-            if "CUDA ERROR:" in str(e):
-                print("Error while trainin:" + e.with_traceback)
-                print("Setting metric to -1")
-                metrics.append(-1.0)
-            else:
-                raise e
+            print("Error while trainin:" + e.with_traceback)
+            print("Evaluation defaults to -1")
+            metrics.append(-1.0)
     print(f"Training finished got metrics: {metrics}")
     return -np.average(metrics)
 

@@ -24,40 +24,40 @@ tabnet_shared_space={
         }
     ]),
     "n":scope.int(hp.choice("n",[8,32,64])),
-    "n_steps":scope.int(hp.quniform("n_steps",3,10,1)),
+    "n_steps":scope.int(hp.quniform("n_steps",8,15,1)),
     "gamma":hp.uniform("gamma",1,2),
     "momentum":hp.uniform("momentum",0,1),
-    "cw_modifier": hp.uniform("cw_modifier",0.5,1.5)
+    "cw_modifier": 1.5
     }
 
 spaces = {
     "tabnet": {
         "large":{
             **tabnet_shared_space,
-            "batch_size":hp.quniform("batch_size",12,15,1),
-            "virtual_batch_size":hp.quniform("virtual_batch_size",8,11,1)
+            "batch_size":hp.quniform("batch_size",9,13,1),
+            "virtual_batch_size":hp.quniform("virtual_batch_size",7,9,1)
         },
         "medium":{
             **tabnet_shared_space,
-            "batch_size":hp.quniform("batch_size",11,13,1),
-            "virtual_batch_size":hp.quniform("virtual_batch_size",7,10,1)
+            "batch_size":hp.quniform("batch_size",8,12,1),
+            "virtual_batch_size":hp.quniform("virtual_batch_size",5,7,1)
         },
         "small":{
             **tabnet_shared_space,
-            "batch_size":hp.quniform("batch_size",8,11,1),
-            "virtual_batch_size":hp.quniform("virtual_batch_size",5,7,1)
+            "batch_size":hp.quniform("batch_size",6,9,1),
+            "virtual_batch_size":hp.quniform("virtual_batch_size",3,5,1)
         }
     },
     "xgboost":{
         "eta":hp.uniform("eta",0.01,0.3),
         "gamma":hp.uniform("gamma",0,10),
-        "max_depth":scope.int(hp.quniform("max_depth",3,10,1)),
+        "max_depth":scope.int(hp.quniform("max_depth",8,15,1)),
         "min_child_weight":hp.uniform("min_child_weight",0,10),
         "max_delta_step":hp.uniform("max_delta_step",1,10),
         "subsample":hp.uniform("subsample",0.3,1),
         "lambda":hp.uniform("lambda",0,5),
         "alpha":hp.uniform("alpha",0,5),
-        "cw_modifier": hp.uniform("cw_modifier",0.5,1.5),
+        "cw_modifier": 1.5,
         "n_estimators":1000,
         "tree_method":"exact"
     }

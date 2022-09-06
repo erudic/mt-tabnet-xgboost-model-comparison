@@ -3,7 +3,7 @@ from functools import partial
 import json
 import os
 import pickle
-from fastai.tabular.all import EarlyStoppingCallback, SaveModelCallback
+from fastai.tabular.all import EarlyStoppingCallback, SaveModelCallback, GradientClip
 from model_trainer.tabnet.utils import get_optimizer_from_params
 from model_trainer.tabnet.tabnet_trainer import TabNetTrainer
 from model_trainer.data.hold_out_data_box import HoldOutDataBox
@@ -61,6 +61,7 @@ def optimize(data_size, validation_method, base_data_path, k=None, max_eval=10, 
         data_size, base_data_path, 'train_val')
 
     callbacks = [
+        GradientClip(),
         EarlyStoppingCallback(
             monitor='valid_loss',
             patience=patience,

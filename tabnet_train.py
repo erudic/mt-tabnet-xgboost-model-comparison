@@ -54,7 +54,7 @@ def train(data_size, base_data_path, info_output_path, evals_start=0, evals_end=
         X_train, Y_train, X_test, Y_test, data_config.categorical_variables)
     X_train, Y_train, X_test, Y_test = next(po_db.get_processed_data())
 
-    trials_in_path = f"inputs/trials/tabnet-{data_size}.p"
+    trials_in_path = f"/inputs/trials/tabnet-{data_size}.p"
     print(f"Loading trial from path: {trials_in_path}")
     with open(trials_in_path, 'rb') as in_file:
         trials = pickle.load(in_file)

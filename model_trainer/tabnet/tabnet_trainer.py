@@ -49,16 +49,21 @@ class TabNetTrainer():
             learn.fit_one_cycle(epochs,cbs=self.cbs)
         return learn
 
-    def validate_model(self, model):
-        with model.no_bar():
-            metric = float(model.validate()[1])
+    def validate_model(self, learn):
+        with learn.no_bar():
+            metric = float(learn.validate()[1])
         return metric
+    
+    def get_preds(self,learn):
+        with learn.no_bar():
+            preds = learn.get_preds()
+        return preds
 
     def train_and_validate(self, X_train, Y_train, X_val, Y_val,cont_vars=[], epochs=50):
         learn = self.train(X_train, Y_train, X_val, Y_val,cont_vars, epochs)
         metric = self.validate_model(learn)
         return learn, metric
-
+        
     def _fastaify_data(self, X_train, Y_train, X_val, Y_val,cont_names):
         train_val, splits = self._merge_and_calc_splits(
             X_train, Y_train, X_val, Y_val)

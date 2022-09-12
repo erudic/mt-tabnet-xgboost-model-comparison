@@ -110,8 +110,8 @@ def train(data_size, base_data_path, info_output_path, evals_start=0, evals_end=
 
         # store feature importances and mask
         feature_importances = tabnet_feature_importances(
-            model.model, model.dls.valid.to('cuda'))
-        res_explain, res_masks = tabnet_explain(model.model, model.dls.valid.to('cuda'))
+            model.model, model.dls.valid.to('cuda:0'))
+        res_explain, res_masks = tabnet_explain(model.model, model.dls.valid.to('cuda:0'))
         feature_and_res = {
             "x_names": model.dls.x_names,
             "feature_importances": feature_importances,

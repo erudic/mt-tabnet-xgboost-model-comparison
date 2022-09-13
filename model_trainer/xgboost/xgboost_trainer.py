@@ -24,7 +24,7 @@ class XGBoostTrainer:
         sample_weights_val = self.compute_sample_weights(Y_val)
         sample_weights_train = self.compute_sample_weights(Y_train)
 
-        model.fit(X_train, Y_train, eval_set=[(X_val, Y_val)],
+        model.fit(X_train, Y_train, eval_set=[(X_train,Y_train),(X_val, Y_val)],
                   sample_weight=sample_weights_train,
                   sample_weight_eval_set=[sample_weights_val]
                   )

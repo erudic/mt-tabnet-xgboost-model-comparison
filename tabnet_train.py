@@ -3,7 +3,7 @@ import json
 import pickle
 import os
 from fastai.tabular.all import EarlyStoppingCallback, SaveModelCallback, GradientClip, CSVLogger
-from model_trainer.tabnet.utils import get_optimizer_from_params
+from model_trainer.tabnet.utils import get_optimizer_from_params, tabnet_feature_importances, tabnet_explain
 from model_trainer.tabnet.tabnet_trainer import TabNetTrainer
 from model_trainer.data import data_loader
 from model_trainer.data.process_only_data_box import ProccessOnlyDataBox
@@ -13,7 +13,6 @@ from hyperopt import space_eval
 import numpy as np
 from torch import tensor
 from sklearn.metrics import f1_score, accuracy_score, confusion_matrix, matthews_corrcoef
-from fast_tabnet.core import tabnet_explain, tabnet_feature_importances
 
 
 def process_params(params):
@@ -109,9 +108,8 @@ def train(data_size, base_data_path, info_output_path, evals_start=0, evals_end=
         pickle_dump(metrics, f'{eval_info_output_path}/metrics.p')
 
         # store feature importances and mask
-        feature_importances = tabnet_feature_importances(
-            model.model, model.dls.valid.to('cuda:0'))
-        res_explain, res_masks = tabnet_explain(model.model, model.dls.valid.to('cuda:0'))
+        feature_importances = tabnet_feature_importances(model.model, model.dls.valid)
+        res_explain, res_masks = tabnet_explain(model.model, model.dls.valid)
         feature_and_res = {
             "x_names": model.dls.x_names,
             "feature_importances": feature_importances,

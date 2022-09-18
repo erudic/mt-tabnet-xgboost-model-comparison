@@ -78,6 +78,13 @@ def train(data_size, base_data_path, info_output_path, evals_start=0, evals_end=
 
         pickle_dump(metrics, f'{eval_info_output_path}/metrics.p')
 
+        features = {
+            "importances": model.feature_importances_,
+            "names": model.feature_names_in_
+        }
+        
+        pickle_dump(features, f'{eval_info_output_path}/features.p')
+
         results = model.evals_result()
         train_loss = results['validation_0']['mlogloss']
         val_loss = results['validation_1']['mlogloss']

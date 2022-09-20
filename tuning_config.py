@@ -29,29 +29,28 @@ tabnet_shared_space={
     "momentum":hp.uniform("momentum",0,1),
     "cw_modifier": 1.5
     }
-
 spaces = {
     "tabnet": {
         "large":{
             **tabnet_shared_space,
-            "batch_size":hp.quniform("batch_size",9,13,1),
-            "virtual_batch_size":hp.quniform("virtual_batch_size",7,9,1)
+            "batch_size":hp.quniform("batch_size",12,15,1),
+            "virtual_batch_size":hp.quniform("virtual_batch_size",8,11,1)
         },
         "medium":{
             **tabnet_shared_space,
-            "batch_size":hp.quniform("batch_size",8,12,1),
-            "virtual_batch_size":hp.quniform("virtual_batch_size",5,7,1)
+            "batch_size":hp.quniform("batch_size",11,13,1),
+            "virtual_batch_size":hp.quniform("virtual_batch_size",7,10,1)
         },
         "small":{
             **tabnet_shared_space,
-            "batch_size":hp.quniform("batch_size",6,9,1),
-            "virtual_batch_size":hp.quniform("virtual_batch_size",3,5,1)
+            "batch_size":hp.quniform("batch_size",8,11,1),
+            "virtual_batch_size":hp.quniform("virtual_batch_size",5,7,1)
         }
     },
     "xgboost":{
         "eta":hp.uniform("eta",0.01,0.3),
         "gamma":hp.uniform("gamma",0,10),
-        "max_depth":scope.int(hp.quniform("max_depth",8,15,1)),
+        "max_depth":scope.int(hp.quniform("max_depth",3,15,1)),
         "min_child_weight":hp.uniform("min_child_weight",0,10),
         "max_delta_step":hp.uniform("max_delta_step",1,10),
         "subsample":hp.uniform("subsample",0.3,1),

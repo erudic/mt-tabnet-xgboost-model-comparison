@@ -37,11 +37,12 @@ def plot_explain(masks, lbls, figsize=(12, 12)):
     plt.imshow(masks)
 
 
-def plot_feature_importances(feature_importances, lbls, figsize=(12, 12)):
+def plot_feature_importances(feature_importances, lbls, figsize=(12, 12),show=True):
     plt.figure(figsize=figsize)
     plt.xticks(rotation='vertical')
     plt.bar(lbls, feature_importances, color='g')
-    plt.show()
+    if(show):
+        plt.show()
 
 
 def tabnet_feature_importances(model, dl):
